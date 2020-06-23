@@ -1,30 +1,97 @@
-import { useState } from "react";
-import { Button } from "@material-ui/core";
+import React from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
-interface IInfo {
-  name: string;
-  age: number;
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
 }
 
-const Index = () => {
-  const [state, setstate] = useState(0);
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
-  const [name, setName] = useState<string>("yayxs");
-  const [info, setInfo] = useState<IInfo>({ name: "yayxs", age: 18 });
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
-  const handleClick = () => {
-    console.log(`按钮执行`);
-    console.log(name);
-    setstate(1);
+function a11yProps(index: any) {
+  return {
+    id: `vertical-tab-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    height: 224,
+  },
+  tabs: {
+    borderRight: `1px solid ${theme.palette.divider}`,
+  },
+}));
+
+interface IItem {
+  label: string;
+  num: number;
+}
+
+// 初始化列表
+const items: Array<IItem> = [
+  {
+    label: "useState",
+    num: 0,
+  },
+];
+
+export default function VerticalTabs() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
   };
 
   return (
-    <>
-      展示一下State : {state}
-      <Button color="primary" onClick={handleClick}>
-        点我直接别墨迹
-      </Button>
-    </>
+    <div className={classes.root}>
+      <Tabs
+        orientation="vertical"
+        variant="scrollable"
+        value={value}
+        onChange={handleChange}
+        aria-label="Vertical tabs example"
+        className={classes.tabs}
+      >
+        {items.map((item) => {
+          return (
+            <>
+              <Tab label={item.label} {...a11yProps(item.num)} key={item.num} />
+            </>
+          );
+        })}
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        hooks——useState
+      </TabPanel>
+    </div>
   );
-};
-export default Index;
+}
