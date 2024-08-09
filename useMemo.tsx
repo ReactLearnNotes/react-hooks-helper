@@ -1,87 +1,72 @@
-// import { StrictMode, memo, useEffect, useMemo, useState } from 'react'
-// import { createRoot } from 'react-dom/client'
-// function createTodos() {
-//   const todos = []
-//   for (let i = 0; i < 50; i++) {
-//     todos.push({
-//       id: i,
-//       text: 'todo' + (i + 1),
-//       comp: Math.random() > 0.5
-//     })
-//   }
+/**
+ * 创建todos
+ */
+export function createTodos() {
+	const todos = [];
+	for (let i = 0; i < 50; i++) {
+		todos.push({
+			id: i,
+			text: `todo${i + 1}`,
+			completed: Math.random() > 0.5,
+		});
+	}
 
-//   return todos
-// }
-// const todos = createTodos()
-// console.log('full todos', todos)
-// function App() {
-//   const [tab, setTab] = useState('all')
-//   const [isDark, setIsDark] = useState(false)
+	return todos;
+}
 
-//   return (
-//     <>
-//       <button onClick={() => setTab('all')}>all</button>
-//       <button onClick={() => setTab('active')}>active</button>
-//       <button onClick={() => setTab('comp')}>comp</button>
-//       <br />
-//       <label>
-//         <input
-//           type='checkbox'
-//           checked={isDark}
-//           onChange={(e) => setIsDark(e.target.checked)}
-//         />
-//         dark mode
-//       </label>
-//       <hr />
-//       <TodoList todos={todos} tab={tab} theme={isDark ? 'dark' : 'light'} />
-//     </>
-//   )
-// }
+// console.log('todos', createTodos())
 
-// const List = memo(function List({ items }) {
-//   // console.log('items.length', items.length)
-//   let startTime = performance.now()
-//   while (performance.now() - startTime < 500) {}
+/**
+ * 根据不同的tab渲染出列表
+ * @param todos
+ * @param tab
+ * @returns
+ */
+export function filterTodos(todos, tab) {
+	console.log(
+		`[ARTIFICIALLY SLOW] Filtering ${todos.length} todos for "${tab}" tab.`,
+	);
+	const startTime = performance.now();
+	while (performance.now() - startTime < 1000) {
+		// 在 500 毫秒内什么都不做以模拟极其缓慢的代码
+	}
 
-//   return (
-//     <>
-//       <ul>
-//         {items.map((item) => {
-//           return (
-//             <li key={item.id}>{item.comp ? <s>{item.text}</s> : item.text}</li>
-//           )
-//         })}
-//       </ul>
-//     </>
-//   )
-// })
+	return todos.filter((todo) => {
+		if (tab === "all") {
+			return true;
+		}
+		if (tab === "active") {
+			return !todo.completed;
+		}
+		if (tab === "completed") {
+			return todo.completed;
+		}
+	});
+}
 
-// function filterTodos(todos, tab) {
-//   return todos.filter((todo) => {
-//     if (tab === 'all') {
-//       return true
-//     } else if (tab === 'active') {
-//       return !todo.comp
-//     } else if (tab === 'comp') {
-//       return todo.comp
-//     }
-//   })
-// }
+export function TodoList({ todos, theme, tab }) {
+	// const visibleTodos = filterTodos(todos, tab);
 
-// function TodoList({ todos, theme, tab }) {
-//   // const visibleTodos = filterTodos(todos, tab)
-//   const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab])
-//   console.log('过滤后的数组', visibleTodos)
-//   return (
-//     <>
-//       <div className={theme}>
-//         <List items={visibleTodos} />
-//       </div>
-//     </>
-//   )
-// }
-
-// // const d =
+	const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
+	return (
+		<>
+			<div className={theme}>
+				<ul>
+					<p>
+						<b>
+							Note: <code>filterTodos</code> is artificially slowed down!
+						</b>
+					</p>
+					{visibleTodos.map((todo) => (
+						<li key={todo.id}>
+							{todo.completed ? <s>{todo.text}</s> : todo.text}
+						</li>
+					))}
+				</ul>
+			</div>
+		</>
+	);
+}
 
 // function SearchUserList() {
 //   const [users, setUsers] = useState(null)
@@ -119,12 +104,45 @@
 //   )
 // }
 
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { useMemo, useState } from "react";
+import { createRoot } from "react-dom/client";
 
-const container = document.querySelector('#root');
+const container = document.querySelector("#root");
 const root = createRoot(container);
 
-root.render(<div>A React Page compiled by Farm</div>);
+const todos = createTodos();
+export function App() {
+	const [tab, setTab] = useState("all");
+	const [isDark, setIsDark] = useState(false);
 
+	return (
+		<>
+			<button type="button" onClick={() => setTab("all")}>
+				all
+			</button>
+			<button type="button" onClick={() => setTab("active")}>
+				active
+			</button>
+			<button type="button" onClick={() => setTab("completed")}>
+				Completed
+			</button>
+			<br />
+			<label>
+				<input
+					type="checkbox"
+					checked={isDark}
+					onChange={(e) => setIsDark(e.target.checked)}
+				/>
+				Dark mode
+			</label>
+			<hr />
+			<TodoList todos={todos} tab={tab} theme={isDark ? "dark" : "light"} />
+		</>
+	);
+}
 
+root.render(
+	<div>
+		<App />
+	</div>,
+);
