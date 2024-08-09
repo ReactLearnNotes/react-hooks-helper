@@ -1,21 +1,17 @@
 {
-  "name": "react-hooks-helper",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "vite"
-  },
+  "name": "react-hooks-learn",
+  "type": "module",
+  "version": "0.0.1",
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "license": "ISC",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.0",
-    "vite": "^4.3.9"
+    "@antfu/eslint-config": "^2.6.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "vite": "^5.0.10"
   }
 }
